@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 const port = 3000
+const db = require('./models')
+const restaurant = db.restaurant
 
 app.get('/', (req, res) => {
   res.send('Hello, Express!')
@@ -8,7 +10,9 @@ app.get('/', (req, res) => {
 
 // 讀取所有餐廳
 app.get('/Restaurants-CRUD', (req, res) => {
-  res.send('read all restaurants')
+  return restaurant.findAll()
+    .then((restaurant) => res.send({ restaurant }))
+    .catch((err) => res.status(422).json(err))
 })
 
 // 刪除任一餐廳
