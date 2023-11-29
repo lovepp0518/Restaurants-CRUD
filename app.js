@@ -1,11 +1,19 @@
 const express = require('express')
 const app = express()
-const port = 3000
+
+const { engine } = require('express-handlebars')
+
 const db = require('./models')
 const restaurant = db.restaurant
 
+const port = 3000
+
+app.engine('.hbs', engine({ extname: '.hbs' }));
+app.set('view engine', '.hbs');
+app.set('views', './views');
+
 app.get('/', (req, res) => {
-  res.send('Hello, Express!')
+  res.render('index')
 })
 
 // 讀取所有餐廳
