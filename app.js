@@ -12,6 +12,8 @@ const { Op } = require('sequelize')
 
 const methodOverride = require('method-override') // 使用 method override
 
+const bodyParser = require('body-parser') // 使用 body-parser
+
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
 app.set('views', './views');
@@ -21,6 +23,9 @@ app.use(express.static('public'));
 
 // 使用 method override 以在表單使用PUT method(表單預設僅能使用GET&POST)
 app.use(methodOverride('_method'))
+
+// 透過 body-parser 從 POST 方法的路由中取得表單資料
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // 首頁重新導入Restaurants-CRUD
 app.get('/', (req, res) => {
@@ -70,11 +75,17 @@ app.get('/restaurantsCRUD/:id/detail', (req, res) => {
 
 // 新增任一餐廳
 app.get('/restaurantsCRUD/new', (req, res) => {
-  res.send('new restaurants')
+  res.render('new')
 })
 
 app.post('/restaurantsCRUD', (req, res) => {
-  res.send('add restaurants')
+  const formData = req.body // 從請求中獲取表單數據，且formData即為物件
+  return restaurant.create(formData) // formData即為物件可直接傳入create()
+    .then(() => {
+      console.log(formData)
+      res.redirect('/restaurantsCRUD')
+    })
+    .catch((err) => console.log(err))
 })
 
 // 刪除任一餐廳
