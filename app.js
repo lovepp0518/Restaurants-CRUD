@@ -50,16 +50,26 @@ app.get('/restaurantsCRUD', (req, res) => {
   }
 })
 
-app.get('/restaurantsCRUD/:id', (req, res) => {
+// 讀取單一餐廳detail
+app.get('/restaurantsCRUD/:id/detail', (req, res) => {
   const id = req.params.id
   return restaurant.findByPk(id, {
     attributes: ['id', 'name', 'image', 'category', 'location', 'google_map', 'phone', 'description'],
     raw: true
   })
     .then((restaurant) => {
-      res.render('show', { restaurant })
+      res.render('detail', { restaurant })
     })
     .catch((err) => res.status(422).json(err))
+})
+
+// 新增任一餐廳
+app.get('/restaurantsCRUD/new', (req, res) => {
+  res.send('new restaurants')
+})
+
+app.post('/restaurantsCRUD', (req, res) => {
+  res.send('add restaurants')
 })
 
 // 刪除任一餐廳
@@ -67,13 +77,8 @@ app.delete('/restaurantsCRUD', (req, res) => {
   res.send('delete restaurants')
 })
 
-// 新增任一餐廳
-app.post('/restaurantsCRUD', (req, res) => {
-  res.send('add restaurants')
-})
-
 // 編輯任一餐廳
-app.get('/restaurantsCRUD/edit', (req, res) => {
+app.get('/restaurantsCRUD/:id/edit', (req, res) => {
   res.send('edit restaurants')
 })
 
