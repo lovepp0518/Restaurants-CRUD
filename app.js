@@ -8,7 +8,9 @@ const restaurant = db.restaurant
 
 const port = 3000
 
-const { Op } = require('sequelize');
+const { Op } = require('sequelize')
+
+const methodOverride = require('method-override') // 使用 method override
 
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
@@ -16,6 +18,9 @@ app.set('views', './views');
 
 // 使用public資料夾中檔案
 app.use(express.static('public'));
+
+// 使用 method override 以在表單使用PUT method(表單預設僅能使用GET&POST)
+app.use(methodOverride('_method'))
 
 // 首頁重新導入Restaurants-CRUD
 app.get('/', (req, res) => {
@@ -46,7 +51,7 @@ app.get('/restaurantsCRUD', (req, res) => {
       raw: true
     })
       .then((restaurants) => res.render('index', { restaurants }))
-      .catch((err) => res.status(422).json(err))
+      .catch((err) => console.log(err))
   }
 })
 
@@ -60,7 +65,7 @@ app.get('/restaurantsCRUD/:id/detail', (req, res) => {
     .then((restaurant) => {
       res.render('detail', { restaurant })
     })
-    .catch((err) => res.status(422).json(err))
+    .catch((err) => console.log(err))
 })
 
 // 新增任一餐廳
@@ -73,8 +78,11 @@ app.post('/restaurantsCRUD', (req, res) => {
 })
 
 // 刪除任一餐廳
-app.delete('/restaurantsCRUD', (req, res) => {
-  res.send('delete restaurants')
+app.delete('/restaurantsCRUD/:id/delete', (req, res) => {
+  const id = req.params.id
+  return restaurant.destroy({ where: { id } })
+    .then(() => res.redirect('/restaurantsCRUD'))
+    .catch((err) => console.log(err))
 })
 
 // 編輯任一餐廳
