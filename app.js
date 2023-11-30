@@ -8,33 +8,72 @@ const restaurant = db.restaurant
 
 const port = 3000
 
+const { Op } = require('sequelize');
+
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
 app.set('views', './views');
 
+// 使用public資料夾中檔案
+app.use(express.static('public'));
+
+// 首頁重新導入Restaurants-CRUD
 app.get('/', (req, res) => {
-  res.render('index')
+  res.redirect('/restaurantsCRUD')
 })
 
 // 讀取所有餐廳
-app.get('/Restaurants-CRUD', (req, res) => {
-  return restaurant.findAll()
-    .then((restaurant) => res.send({ restaurant }))
+app.get('/restaurantsCRUD', (req, res) => {
+  const keyword = req.query.keyword?.trim() //=右邊的keyword為html檔中input的name
+  if (keyword) {
+    return restaurant.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.like]: `%${keyword}%` } },
+          { category: { [Op.like]: `%${keyword}%` } },
+        ]
+      },
+      attributes: ['id', 'name', 'image', 'category', 'rating'],
+      raw: true
+    })
+      .then((restaurants) => {
+        res.render('index', { restaurants })
+      })
+      .catch((err) => res.status(422).json(err))
+  } else {
+    return restaurant.findAll({
+      attributes: ['id', 'name', 'image', 'category', 'rating'],
+      raw: true
+    })
+      .then((restaurants) => res.render('index', { restaurants }))
+      .catch((err) => res.status(422).json(err))
+  }
+})
+
+app.get('/restaurantsCRUD/:id', (req, res) => {
+  const id = req.params.id
+  return restaurant.findByPk(id, {
+    attributes: ['id', 'name', 'image', 'category', 'location', 'google_map', 'phone', 'description'],
+    raw: true
+  })
+    .then((restaurant) => {
+      res.render('show', { restaurant })
+    })
     .catch((err) => res.status(422).json(err))
 })
 
 // 刪除任一餐廳
-app.delete('/Restaurants-CRUD', (req, res) => {
+app.delete('/restaurantsCRUD', (req, res) => {
   res.send('delete restaurants')
 })
 
 // 新增任一餐廳
-app.post('/Restaurants-CRUD', (req, res) => {
+app.post('/restaurantsCRUD', (req, res) => {
   res.send('add restaurants')
 })
 
 // 編輯任一餐廳
-app.get('/Restaurants-CRUD/edit', (req, res) => {
+app.get('/restaurantsCRUD/edit', (req, res) => {
   res.send('edit restaurants')
 })
 
