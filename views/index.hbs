@@ -16,8 +16,8 @@
 <!-- search bar -->
 <div class="container search-bar">
   <div class="search-bar-outer">
-    <div class="search-bar-inner">
-      <form action="/restaurantsCRUD">
+    <div class="search-bar-inner row">
+      <form action="/restaurantsCRUD" class="col pe-0">
         <h4 class="mb-2">尋找餐廳：</h4>
         <div class="input-group">
           <input type="text" name="keyword" class="form-control" placeholder="輸入餐廳、分類" aria-label="Restaurant Name..."
@@ -27,12 +27,16 @@
           </div>
         </div>
       </form>
+
+      <!--  create button -->
+      <div class="col-1 d-flex flex-row-reverse align-items-end p-0">
+        <a href="/restaurantsCRUD/new"><button class="create btn btn-major"><i
+              class="fa-solid fa-plus"></i></button></a>
+      </div>
+
     </div>
   </div>
 </div>
-
-<!--  create button -->
-<a href="/restaurantsCRUD/new">Create</a>
 
 <!-- restaurant list -->
 <div class="container mt-5">
