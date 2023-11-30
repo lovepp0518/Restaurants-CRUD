@@ -1,0 +1,39 @@
+<form action="/restaurantsCRUD/{{restaurant.id}}/edit?_method=PUT" method="POST">
+  <div class="row mb-3">
+    <label class="form-label col-2">name</label>
+    <input type="text" class="form-control col" name="name" value="{{restaurant.name}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">name_en</label>
+    <input type="text" class="form-control col" name="name_en" value="{{restaurant.name_en}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">category</label>
+    <input type="text" class="form-control col" name="category" value="{{restaurant.category}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">image</label>
+    <input type="text" class="form-control col" name="image" value="{{restaurant.image}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">location</label>
+    <input type="text" class="form-control col" name="location" value="{{restaurant.location}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">phone</label>
+    <input type="text" class="form-control col" name="phone" value="{{restaurant.phone}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">google_map</label>
+    <input type="text" class="form-control col" name="google_map" value="{{restaurant.google_map}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">rating</label>
+    <input type="text" class="form-control col" name="rating" value="{{restaurant.rating}}">
+  </div>
+  <div class="row mb-3">
+    <label class="form-label col-2">description</label>
+    <input type="text" class="form-control col" name="description" value="{{restaurant.description}}">
+  </div>
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>

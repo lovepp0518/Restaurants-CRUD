@@ -95,9 +95,23 @@ app.delete('/restaurantsCRUD/:id/delete', (req, res) => {
 
 // 編輯任一餐廳
 app.get('/restaurantsCRUD/:id/edit', (req, res) => {
-  res.send('edit restaurants')
+  const id = req.params.id
+  return restaurant.findByPk(id, {
+    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description'],
+    raw: true
+  })
+    .then((restaurant) => {
+      res.render('edit', { restaurant })
+    })
+    .catch((err) => console.log(err))
 })
 
+app.put('/restaurantsCRUD/:id/edit', (req, res) => {
+  const id = req.params.id
+  const formData = req.body
+  return restaurant.update(formData, { where: { id } })
+    .then(() => res.redirect('/restaurantsCRUD'))
+})
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
