@@ -81,10 +81,7 @@ app.get('/restaurantsCRUD/new', (req, res) => {
 app.post('/restaurantsCRUD', (req, res) => {
   const formData = req.body // 從請求中獲取表單數據，且formData即為物件
   return restaurant.create(formData) // formData即為物件可直接傳入create()
-    .then(() => {
-      console.log(formData)
-      res.redirect('/restaurantsCRUD')
-    })
+    .then(() => res.redirect('/restaurantsCRUD'))
     .catch((err) => console.log(err))
 })
 
