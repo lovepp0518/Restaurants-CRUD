@@ -14,18 +14,18 @@ const methodOverride = require('method-override') // 使用 method override
 
 const bodyParser = require('body-parser') // 使用 body-parser
 
-app.engine('.hbs', engine({ extname: '.hbs' }));
-app.set('view engine', '.hbs');
-app.set('views', './views');
+app.engine('.hbs', engine({ extname: '.hbs' }))
+app.set('view engine', '.hbs')
+app.set('views', './views')
 
 // 使用public資料夾中檔案
-app.use(express.static('public'));
+app.use(express.static('public'))
 
 // 使用 method override 以在表單使用PUT method(表單預設僅能使用GET&POST)
 app.use(methodOverride('_method'))
 
 // 透過 body-parser 從 POST 方法的路由中取得表單資料
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }))
 
 // 首頁重新導入Restaurants-CRUD
 app.get('/', (req, res) => {
@@ -34,13 +34,13 @@ app.get('/', (req, res) => {
 
 // 讀取所有餐廳
 app.get('/restaurantsCRUD', (req, res) => {
-  const keyword = req.query.keyword?.trim() //=右邊的keyword為html檔中input的name
+  const keyword = req.query.keyword?.trim() //  等號右邊的keyword為html檔中input的name
   if (keyword) {
     return restaurant.findAll({
       where: {
         [Op.or]: [
           { name: { [Op.like]: `%${keyword}%` } },
-          { category: { [Op.like]: `%${keyword}%` } },
+          { category: { [Op.like]: `%${keyword}%` } }
         ]
       },
       attributes: ['id', 'name', 'image', 'category', 'rating'],
@@ -52,7 +52,7 @@ app.get('/restaurantsCRUD', (req, res) => {
     // 若使用者沒有輸入內容，就按下了送出鈕：需要防止表單送出並提示使用者
     if (keyword === '') {
       // 用<script></script>包起來的是在client端執行JavaScript內容：alert彈窗，及重新導向"/restaurantsCRUD"路徑
-      res.send('<script>alert("未輸入內容，請檢查！"); window.location.href = "/restaurantsCRUD";</script>');
+      res.send('<script>alert("未輸入內容，請檢查！"); window.location.href = "/restaurantsCRUD";</script>')
       return
     }
     // 未按下送出
@@ -117,6 +117,7 @@ app.put('/restaurantsCRUD/:id/edit', (req, res) => {
   return restaurant.update(formData, { where: { id } })
     .then(() => res.redirect('/restaurantsCRUD'))
 })
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
