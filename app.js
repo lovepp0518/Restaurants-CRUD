@@ -46,11 +46,16 @@ app.get('/restaurantsCRUD', (req, res) => {
       attributes: ['id', 'name', 'image', 'category', 'rating'],
       raw: true
     })
-      .then((restaurants) => {
-        res.render('index', { restaurants })
-      })
+      .then((restaurants) => res.render('index', { restaurants }))
       .catch((err) => res.status(422).json(err))
   } else {
+    // 若使用者沒有輸入內容，就按下了送出鈕：需要防止表單送出並提示使用者
+    if (keyword === '') {
+      // 用<script></script>包起來的是在client端執行JavaScript內容：alert彈窗，及重新導向"/restaurantsCRUD"路徑
+      res.send('<script>alert("未輸入內容，請檢查！"); window.location.href = "/restaurantsCRUD";</script>');
+      return
+    }
+    // 未按下送出
     return restaurant.findAll({
       attributes: ['id', 'name', 'image', 'category', 'rating'],
       raw: true
