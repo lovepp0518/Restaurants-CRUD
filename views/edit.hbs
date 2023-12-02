@@ -1,3 +1,18 @@
+<script>
+  function validateForm(event) {
+    const form = event.target;
+    const inputs = form.querySelectorAll('input');
+
+    for (const input of inputs) {
+      if (!input.value) {
+        alert('尚有欄位未填寫完畢，無法送出！');
+        event.preventDefault(); // 阻止表單的默認提交行為
+        return;
+      }
+    }
+  }
+</script>
+
 <header>
   <!-- navigation -->
   <nav class="navbar navbar-light bg-light">
@@ -44,8 +59,9 @@
     <input type="text" class="form-control col" name="google_map" value="{{restaurant.google_map}}">
   </div>
   <div class="row mb-3">
-    <label class="form-label col-2">評分（1~5）</label>
-    <input type="number" class="form-control col" name="rating" step="0.01" value="{{restaurant.rating}}">
+    <label class="form-label col-2">評分（0.0~5.0）</label>
+    <input type="number" class="form-control col" name="rating" step="0.1" min="0" max="5"
+      value="{{restaurant.rating}}">
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">簡介</label>
