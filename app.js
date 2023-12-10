@@ -3,16 +3,14 @@ const app = express()
 
 const { engine } = require('express-handlebars')
 
-const db = require('./models')
-const restaurant = db.restaurant
-
 const port = 3000
-
-const { Op } = require('sequelize')
 
 const methodOverride = require('method-override') // 使用 method override
 
 const bodyParser = require('body-parser') // 使用 body-parser
+
+// 引用路由器
+const router = require('./routes')
 
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
@@ -27,96 +25,8 @@ app.use(methodOverride('_method'))
 // 透過 body-parser 從 POST 方法的路由中取得表單資料
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// 首頁重新導入Restaurants-CRUD
-app.get('/', (req, res) => {
-  res.redirect('/restaurantsCRUD')
-})
-
-// 讀取所有餐廳
-app.get('/restaurantsCRUD', (req, res) => {
-  const keyword = req.query.keyword?.trim() //  等號右邊的keyword為html檔中input的name
-  if (keyword) {
-    return restaurant.findAll({
-      where: {
-        [Op.or]: [
-          { name: { [Op.like]: `%${keyword}%` } },
-          { category: { [Op.like]: `%${keyword}%` } }
-        ]
-      },
-      attributes: ['id', 'name', 'image', 'category', 'rating'],
-      raw: true
-    })
-      .then((restaurants) => res.render('index', { restaurants }))
-      .catch((err) => res.status(422).json(err))
-  } else {
-    // 若使用者沒有輸入內容，就按下了送出鈕：需要防止表單送出並提示使用者
-    if (keyword === '') {
-      // 用<script></script>包起來的是在client端執行JavaScript內容：alert彈窗，及重新導向"/restaurantsCRUD"路徑
-      res.send('<script>alert("未輸入內容，請檢查！"); window.location.href = "/restaurantsCRUD";</script>')
-      return
-    }
-    // 未按下送出
-    return restaurant.findAll({
-      attributes: ['id', 'name', 'image', 'category', 'rating'],
-      raw: true
-    })
-      .then((restaurants) => res.render('index', { restaurants }))
-      .catch((err) => console.log(err))
-  }
-})
-
-// 讀取單一餐廳detail
-app.get('/restaurantsCRUD/:id/detail', (req, res) => {
-  const id = req.params.id
-  return restaurant.findByPk(id, {
-    attributes: ['id', 'name', 'image', 'category', 'location', 'google_map', 'phone', 'description'],
-    raw: true
-  })
-    .then((restaurant) => {
-      res.render('detail', { restaurant })
-    })
-    .catch((err) => console.log(err))
-})
-
-// 新增任一餐廳
-app.get('/restaurantsCRUD/new', (req, res) => {
-  res.render('new')
-})
-
-app.post('/restaurantsCRUD', (req, res) => {
-  const formData = req.body // 從請求中獲取表單數據，且formData即為物件
-  return restaurant.create(formData) // formData即為物件可直接傳入create()
-    .then(() => res.redirect('/restaurantsCRUD'))
-    .catch((err) => console.log(err))
-})
-
-// 刪除任一餐廳
-app.delete('/restaurantsCRUD/:id/delete', (req, res) => {
-  const id = req.params.id
-  return restaurant.destroy({ where: { id } })
-    .then(() => res.redirect('/restaurantsCRUD'))
-    .catch((err) => console.log(err))
-})
-
-// 編輯任一餐廳
-app.get('/restaurantsCRUD/:id/edit', (req, res) => {
-  const id = req.params.id
-  return restaurant.findByPk(id, {
-    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description'],
-    raw: true
-  })
-    .then((restaurant) => {
-      res.render('edit', { restaurant })
-    })
-    .catch((err) => console.log(err))
-})
-
-app.put('/restaurantsCRUD/:id/edit', (req, res) => {
-  const id = req.params.id
-  const formData = req.body
-  return restaurant.update(formData, { where: { id } })
-    .then(() => res.redirect('/restaurantsCRUD'))
-})
+// 將 request 導入路由器
+app.use(router)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
