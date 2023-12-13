@@ -14,6 +14,9 @@ const bodyParser = require('body-parser') // 使用 body-parser
 // 引用路由器
 const router = require('./routes')
 
+const messageHandler = require('./middlewares/message-handler')
+const errorHandler = require('./middlewares/error-handler')
+
 // 呼叫取用 dotenv 設定檔
 if (process.env.NODE_ENV === 'development') {
   require('dotenv').config()
@@ -40,8 +43,13 @@ app.use(session({
 
 app.use(flash())
 
+// 需放在session&flash之後，router之前
+app.use(messageHandler)
+
 // 將 request 導入路由器
 app.use(router)
+
+app.use(errorHandler)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
