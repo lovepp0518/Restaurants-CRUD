@@ -50,13 +50,19 @@ npx sequelize db:migrate
 npm run seed
 ```
 
-6. Execute the code below to start the server.
+6. Setup environment variable(NODE_ENV).
+
+```
+export NODE_ENV=development
+```
+
+7. Execute the code below to start the server.
 
 ```
 npm run start
 ```
 
-7. You can see the massage in the terminal. Now you can open the browser and go to the following URL.
+8. You can see the massage in the terminal. Now you can open the browser and go to the following URL.
 
 ```
 express server is running on http://localhost:3000
