@@ -35,25 +35,28 @@ git clone https://github.com/lovepp0518/Restaurants-CRUD.git
 npm install
 ```
 
-4. Execute the code below to create database, create data table and import seed data.
+4. Execute the code below in MySQL to create the restaurant database.
 
 ```
-npm run db:create
+CREATE DATABASE restaurant;
 ```
+
+5. Execute the code below in terminal to create data table and import seed data.
+
 ```
-npm run db:migrate
+npx sequelize db:migrate
 ```
 ```
 npm run seed
 ```
 
-5. Execute the code below to start the server.
+6. Execute the code below to start the server.
 
 ```
 npm run start
 ```
 
-6. You can see the massage in the terminal. Now you can open the browser and go to the following URL.
+7. You can see the massage in the terminal. Now you can open the browser and go to the following URL.
 
 ```
 express server is running on http://localhost:3000
