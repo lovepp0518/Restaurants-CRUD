@@ -1,5 +1,7 @@
 const express = require('express')
 const app = express()
+const flash = require('connect-flash')
+const session = require('express-session')
 
 const { engine } = require('express-handlebars')
 
@@ -11,6 +13,11 @@ const bodyParser = require('body-parser') // 使用 body-parser
 
 // 引用路由器
 const router = require('./routes')
+
+// 呼叫取用 dotenv 設定檔
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config()
+}
 
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
@@ -24,6 +31,14 @@ app.use(methodOverride('_method'))
 
 // 透過 body-parser 從 POST 方法的路由中取得表單資料
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}))
+
+app.use(flash())
 
 // 將 request 導入路由器
 app.use(router)
