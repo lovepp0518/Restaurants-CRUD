@@ -1,18 +1,3 @@
-<script>
-  function validateForm(event) {
-    const form = event.target;
-    const inputs = form.querySelectorAll('input');
-
-    for (const input of inputs) {
-      if (!input.value) {
-        alert('尚有欄位未填寫完畢，無法送出！');
-        event.preventDefault(); // 阻止表單的默認提交行為
-        return;
-      }
-    }
-  }
-</script>
-
 <header>
   <!-- navigation -->
   <nav class="navbar navbar-light bg-light">
@@ -29,42 +14,42 @@
 
 <h1 class="mb-1 restaurant-show-title">新增餐廳資訊</h1>
 
-<form action="/restaurantsCRUD" method="POST" class="p-5" onsubmit="validateForm(event)">
+<form action="/restaurantsCRUD" method="POST" class="p-5">
   <div class="row mb-3">
     <label class="form-label col-2">名稱</label>
-    <input type="text" class="form-control col" name="name">
+    <input type="text" class="form-control col" name="name" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">英文名稱</label>
-    <input type="text" class="form-control col" name="name_en">
+    <input type="text" class="form-control col" name="name_en" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">類別</label>
-    <input type="text" class="form-control col" name="category">
+    <input type="text" class="form-control col" name="category" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">圖片</label>
-    <input type="text" class="form-control col" name="image">
+    <input type="text" class="form-control col" name="image" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">地址</label>
-    <input type="text" class="form-control col" name="location">
+    <input type="text" class="form-control col" name="location" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">電話</label>
-    <input type="text" class="form-control col" name="phone">
+    <input type="text" class="form-control col" name="phone" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">Google map</label>
-    <input type="text" class="form-control col" name="google_map">
+    <input type="text" class="form-control col" name="google_map" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">評分（1.0~5.0）</label>
-    <input type="number" class="form-control col" name="rating" step="0.1" min="0" max="5">
+    <input type="number" class="form-control col" name="rating" step="0.1" min="0" max="5" required>
   </div>
   <div class="row mb-3">
     <label class="form-label col-2">簡介</label>
-    <input type="text" class="form-control col" name="description">
+    <input type="text" class="form-control col" name="description" required>
   </div>
   <div class="d-grid gap-2 d-md-flex justify-content-md-center">
     <button type="submit" class="btn btn-primary">Save</button>
