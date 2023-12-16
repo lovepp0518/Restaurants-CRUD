@@ -44,7 +44,7 @@ router.get('/', (req, res, next) => {
 })
 
 // 讀取單一餐廳detail
-router.get('/:id/detail', (req, res) => {
+router.get('/:id/detail', (req, res, next) => {
   const id = req.params.id
   return restaurant.findByPk(id, {
     attributes: ['id', 'name', 'image', 'category', 'location', 'google_map', 'phone', 'description'],
@@ -64,7 +64,7 @@ router.get('/new', (req, res) => {
   res.render('new')
 })
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
   const formData = req.body // 從請求中獲取表單數據，且formData即為物件
   return restaurant.create(formData) // formData即為物件可直接傳入create()
     .then(() => {
@@ -78,7 +78,7 @@ router.post('/', (req, res) => {
 })
 
 // 刪除任一餐廳
-router.delete('/:id/delete', (req, res) => {
+router.delete('/:id/delete', (req, res, next) => {
   const id = req.params.id
   return restaurant.destroy({ where: { id } })
     .then(() => {
@@ -92,7 +92,7 @@ router.delete('/:id/delete', (req, res) => {
 })
 
 // 編輯任一餐廳
-router.get('/:id/edit', (req, res) => {
+router.get('/:id/edit', (req, res, next) => {
   const id = req.params.id
   return restaurant.findByPk(id, {
     attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description'],
@@ -107,7 +107,7 @@ router.get('/:id/edit', (req, res) => {
     })
 })
 
-router.put('/:id/edit', (req, res) => {
+router.put('/:id/edit', (req, res, next) => {
   const id = req.params.id
   const formData = req.body
   return restaurant.update(formData, { where: { id } })
