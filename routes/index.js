@@ -4,7 +4,7 @@ const router = express.Router()
 const restaurantsCRUD = require('./restaurantsCRUD')
 router.use('/restaurantsCRUD', restaurantsCRUD)
 
-const restaurantsCRUD = require('./users')
+const users = require('./users')
 router.use('/users', users)
 
 // 首頁重新導入Restaurants-CRUD
