@@ -17,6 +17,8 @@ const router = require('./routes')
 const messageHandler = require('./middlewares/message-handler')
 const errorHandler = require('./middlewares/error-handler')
 
+const passport = require('passport')
+
 // 呼叫取用 dotenv 設定檔
 if (process.env.NODE_ENV === 'development') {
   require('dotenv').config()
@@ -42,6 +44,9 @@ app.use(session({
 }))
 
 app.use(flash())
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 // 需放在session&flash之後，router之前
 app.use(messageHandler)
