@@ -21,7 +21,12 @@ router.get('/register', (req, res) => {
 })
 
 router.post('/logout', (req, res) => {
-  return res.redirect('/login')
+  req.logout((error) => {
+    if (error) {
+      next(error)
+    }
+    return res.redirect('/login')
+  })
 })
 
 module.exports = router
