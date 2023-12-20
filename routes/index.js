@@ -4,14 +4,6 @@ const router = express.Router()
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 
-const restaurantsCRUD = require('./restaurantsCRUD')
-const users = require('./users')
-const authHandler = require('../middlewares/auth-handler')
-
-router.use('/restaurantsCRUD', authHandler, restaurantsCRUD)
-router.use('/users', users)
-
-
 const db = require('../models')
 const User = db.User
 
@@ -41,6 +33,13 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, { id: user.id })
 })
+
+const restaurantsCRUD = require('./restaurantsCRUD')
+const users = require('./users')
+const authHandler = require('../middlewares/auth-handler')
+
+router.use('/restaurantsCRUD', authHandler, restaurantsCRUD)
+router.use('/users', users)
 
 // 首頁重新導入Restaurants-CRUD
 router.get('/', (req, res) => {

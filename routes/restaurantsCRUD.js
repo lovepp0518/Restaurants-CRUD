@@ -8,13 +8,19 @@ const { Op } = require('sequelize')
 // 讀取所有餐廳
 router.get('/', (req, res, next) => {
   const keyword = req.query.keyword?.trim() //  等號右邊的keyword為html檔中input的name
+  const userId = req.user.id
+
   if (keyword) {
     return restaurant.findAll({
       where: {
-        [Op.or]: [
-          { name: { [Op.like]: `%${keyword}%` } },
-          { category: { [Op.like]: `%${keyword}%` } }
-        ]
+        [Op.and]: [
+          { userId },
+          {
+            [Op.or]: [
+              { name: { [Op.like]: `%${keyword}%` } },
+              { category: { [Op.like]: `%${keyword}%` } }
+            ]
+          }]
       },
       attributes: ['id', 'name', 'image', 'category', 'rating'],
       raw: true
@@ -33,6 +39,7 @@ router.get('/', (req, res, next) => {
     // 未按下送出
     return restaurant.findAll({
       attributes: ['id', 'name', 'image', 'category', 'rating'],
+      where: { userId },
       raw: true
     })
       .then((restaurants) => res.render('index', { restaurants }))
@@ -46,11 +53,21 @@ router.get('/', (req, res, next) => {
 // 讀取單一餐廳detail
 router.get('/:id/detail', (req, res, next) => {
   const id = req.params.id
+  const userId = req.user.id
+
   return restaurant.findByPk(id, {
-    attributes: ['id', 'name', 'image', 'category', 'location', 'google_map', 'phone', 'description'],
+    attributes: ['id', 'name', 'image', 'category', 'location', 'google_map', 'phone', 'description', 'userId'],
     raw: true
   })
     .then((restaurant) => {
+      if (!restaurant) {
+        req.flash('error', '找不到資料')
+        return res.redirect('/restaurantsCRUD')
+      }
+      if (restaurant.userId !== userId) {
+        req.flash('error', '權限不足')
+        return res.redirect('/restaurantsCRUD')
+      }
       res.render('detail', { restaurant })
     })
     .catch((error) => {
@@ -59,13 +76,16 @@ router.get('/:id/detail', (req, res, next) => {
     })
 })
 
-// 新增任一餐廳
+// 新增任一餐廳頁面
 router.get('/new', (req, res) => {
   res.render('new')
 })
 
+// 新增任一餐廳動作
 router.post('/', (req, res, next) => {
   const formData = req.body // 從請求中獲取表單數據，且formData即為物件
+  formData.userId = req.user.id // 運用passport擴充，可以從req.user.id拿到userId
+
   return restaurant.create(formData) // formData即為物件可直接傳入create()
     .then(() => {
       req.flash('success', '新增成功')
@@ -80,10 +100,25 @@ router.post('/', (req, res, next) => {
 // 刪除任一餐廳
 router.delete('/:id/delete', (req, res, next) => {
   const id = req.params.id
-  return restaurant.destroy({ where: { id } })
-    .then(() => {
-      req.flash('success', '刪除成功')
-      return res.redirect('/restaurantsCRUD')
+  const userId = req.user.id
+
+  return restaurant.findByPk(id, {
+    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'google_map', 'phone', 'description', 'userId']
+  })
+    .then((restaurant) => {
+      if (!restaurant) {
+        req.flash('error', '找不到資料')
+        return res.redirect('/restaurantsCRUD')
+      }
+      if (restaurant.userId !== userId) {
+        req.flash('error', '權限不足')
+        return res.redirect('/restaurantsCRUD')
+      }
+      return restaurant.destroy()
+        .then(() => {
+          req.flash('success', '刪除成功')
+          return res.redirect('/restaurantsCRUD')
+        })
     })
     .catch((error) => {
       error.errorMessage = '刪除失敗'
@@ -91,14 +126,24 @@ router.delete('/:id/delete', (req, res, next) => {
     })
 })
 
-// 編輯任一餐廳
+// 編輯任一餐廳頁面
 router.get('/:id/edit', (req, res, next) => {
   const id = req.params.id
+  const userId = req.user.id
+
   return restaurant.findByPk(id, {
-    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description'],
+    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description', 'userId'],
     raw: true
   })
     .then((restaurant) => {
+      if (!restaurant) {
+        req.flash('error', '找不到資料')
+        return res.redirect('/restaurantsCRUD')
+      }
+      if (restaurant.userId !== userId) {
+        req.flash('error', '權限不足')
+        return res.redirect('/restaurantsCRUD')
+      }
       res.render('edit', { restaurant })
     })
     .catch((error) => {
@@ -107,13 +152,30 @@ router.get('/:id/edit', (req, res, next) => {
     })
 })
 
+// 編輯任一餐廳動作
 router.put('/:id/edit', (req, res, next) => {
   const id = req.params.id
   const formData = req.body
-  return restaurant.update(formData, { where: { id } })
-    .then(() => {
-      req.flash('success', '編輯成功')
-      res.redirect('/restaurantsCRUD')
+  const userId = req.user.id
+  formData.userId = req.user.id // 運用passport擴充，可以從req.user.id拿到userId
+
+  return restaurant.findByPk(id, {
+    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description', 'userId'],
+  })
+    .then((restaurant) => {
+      if (!restaurant) {
+        req.flash('error', '找不到資料')
+        return res.redirect('/restaurantsCRUD')
+      }
+      if (restaurant.userId !== userId) {
+        req.flash('error', '權限不足')
+        return res.redirect('/restaurantsCRUD')
+      }
+      return restaurant.update(formData, { where: { id } })
+        .then(() => {
+          req.flash('success', '編輯成功')
+          res.redirect('/restaurantsCRUD')
+        })
     })
     .catch((error) => {
       error.errorMessage = '編輯失敗'
