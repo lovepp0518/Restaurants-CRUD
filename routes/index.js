@@ -41,6 +41,8 @@ router.post('/logout', (req, res, next) => {
     if (error) {
       next(error)
     }
+    // 使用者已登出
+    req.flash('success', '使用者已登出')
     return res.redirect('/login')
   })
 })
