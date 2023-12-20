@@ -18,11 +18,10 @@ const bodyParser = require('body-parser') // 使用 body-parser
 
 // 引用路由器
 const router = require('./routes')
+const passport = require('./config/passport')
 
 const messageHandler = require('./middlewares/message-handler')
 const errorHandler = require('./middlewares/error-handler')
-
-const passport = require('passport')
 
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
