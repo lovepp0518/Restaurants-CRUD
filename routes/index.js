@@ -106,7 +106,7 @@ router.get('/oauth2/redirect/facebook', passport.authenticate('facebook', {
   failureFlash: true
 }))
 
-router.post('/logout', (req, res) => {
+router.post('/logout', (req, res, next) => {
   req.logout((error) => {
     if (error) {
       next(error)

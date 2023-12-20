@@ -160,7 +160,7 @@ router.put('/:id/edit', (req, res, next) => {
   formData.userId = req.user.id // 運用passport擴充，可以從req.user.id拿到userId
 
   return restaurant.findByPk(id, {
-    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description', 'userId'],
+    attributes: ['id', 'name', 'name_en', 'image', 'category', 'location', 'phone', 'google_map', 'rating', 'description', 'userId']
   })
     .then((restaurant) => {
       if (!restaurant) {

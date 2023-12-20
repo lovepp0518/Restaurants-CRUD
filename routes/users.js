@@ -19,7 +19,7 @@ router.post('/', (req, res, next) => {
   }
 
   return bcrypt.hash(password, 10)
-    .then((hash) =>{
+    .then((hash) => {
       User.findOrCreate({
         where: { email },
         defaults: { name, password: hash }

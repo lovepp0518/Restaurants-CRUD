@@ -3,7 +3,7 @@ const restaurantsJson = require('./data/restaurant.json').results
 const bcrypt = require('bcryptjs')
 
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     let transaction
 
     try {
@@ -38,7 +38,7 @@ module.exports = {
           updatedAt: new Date()
         }
       ],
-        { transaction }
+      { transaction }
       )
       await queryInterface.bulkInsert('restaurants', initialData, { transaction })
       await transaction.commit()
@@ -47,8 +47,8 @@ module.exports = {
     }
   },
 
-  async down(queryInterface, Sequelize) {
+  async down (queryInterface, Sequelize) {
     await queryInterface.bulkDelete('Users', null)
     await queryInterface.bulkDelete('restaurants', null)
   }
-};
+}
