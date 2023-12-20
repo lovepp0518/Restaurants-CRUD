@@ -6,6 +6,7 @@ A simple restaurant web application for foodie
 - Search restaurants by name or category.
 - Show restaurant details: address, Google Map link, phone number, introduction.
 - Add, edit and delete restaurants in the list.
+- Register, login and logout.
 
 ## Prerequisites
 
