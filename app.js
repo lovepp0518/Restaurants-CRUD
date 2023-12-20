@@ -3,6 +3,11 @@ const app = express()
 const flash = require('connect-flash')
 const session = require('express-session')
 
+// 呼叫取用 dotenv 設定檔
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config()
+}
+
 const { engine } = require('express-handlebars')
 
 const port = 3000
@@ -18,11 +23,6 @@ const messageHandler = require('./middlewares/message-handler')
 const errorHandler = require('./middlewares/error-handler')
 
 const passport = require('passport')
-
-// 呼叫取用 dotenv 設定檔
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config()
-}
 
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
